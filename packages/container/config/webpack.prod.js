@@ -16,13 +16,17 @@ const prodConfig = {
   // Шаблон для формирования имен файлов
   output: {
     filename: '[name].[contenthash].js',
+    // Часть публичного (на реальном сайте) пути, которая будет добавляться перед именем файла при встраивании скрипта в index.html
+    // Приведен пример для настройки AWS и S3
+    publicPath: '/container/latest/',
   },
 
   plugins: [
     new ModuleFederationPlugin({
       name: 'container',
       remotes: {
-        marketingRemote: `marketing@${domain}/marketing/remoteEntry.js`,
+        // marketing/latest - это специфическое положение файлов микрофронтов на сервере. В данном случае речь идет о AWS и S3
+        marketingRemote: `marketing@${domain}/marketing/latest/remoteEntry.js`,
       },
       shared: packageJson.dependencies,
     }),

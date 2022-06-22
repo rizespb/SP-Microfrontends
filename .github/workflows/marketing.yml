@@ -1,20 +1,20 @@
 # имя pipeline
-name: deploy-container
+name: deploy-marketing
 
 on:
   push:
     branches:
       - master
-      # запускать, только если изменения касаются содержимого папки packages/container
+      # запускать, только если изменения касаются содержимого папки packages/marketing
     paths:
-      - 'packages/container/**'
+      - 'packages/marketing/**'
 
 defaults:
   # Устанавливаем среду выполнения
   run:
     # Все команды и действия выполнять внутри папки packages/container
     # Например, npm install или npm run build делать внутри packages/container
-    working-directory: packages/container
+    working-directory: packages/marketing
 
 # Список того, что надо выполнить
 jobs:
@@ -28,19 +28,17 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm install
       - run: npm run build
-        env:
-          PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
 
       # Доступ к aws-cli для деплоя на Амазон
       - uses: chrislennon/action-aws-cli@v1.1
       # Синхронизировать содержимое полученной при npm run build папки dist с папкой для хранения файлов на AWS
-      - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
+      - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/latest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # Инвалидация кэша - то есть удаление старых файлов при каждом новом билде
-      - run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/container/latest/index.html"
+      - run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/marketing/latest/remoteEntry.js"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
