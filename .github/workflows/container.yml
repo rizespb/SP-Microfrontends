@@ -1,39 +1,26 @@
-# имя pipeline
 name: deploy-container
 
-# На какие события запускать пайплайн
-# Запускать при push в ветку мастер
 on:
   push:
     branches:
       - master
-      # только, если изменения касаются содержимого папки packages/container
     paths:
       - 'packages/container/**'
 
 defaults:
-  # Устанавливаем среду выполнения
   run:
-    # Все команды и действия выполнять внутри папки packages/container
-    # Например, npm install или npm run build делать внутри packages/container
     working-directory: packages/container
 
-# Список того, что надо выполнить
 jobs:
-  # build и деплой
   build:
-    # Запустить вирутальную машину на Ubuntu последней версии
     runs-on: ubuntu-latest
 
     steps:
-      # Загрузить код на виртуальную машину
       - uses: actions/checkout@v2
       - run: npm install
       - run: npm run build
 
-      # Доступ к aws-cli для деплоя на Амазон
       - uses: chrislennon/action-aws-cli@v1.1
-      # Синхронизировать содержимое полученной при npm run build папки dist с папкой для хранения файлов на AWS
       - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
