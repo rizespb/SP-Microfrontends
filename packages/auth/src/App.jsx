@@ -43,6 +43,3 @@ const App = ({ history, onSignIn }) => {
 }
 
 export default App
-
-
-// Test comment

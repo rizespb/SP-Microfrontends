@@ -39,7 +39,7 @@ const SingIn = ({ onSignIn }) => {
     console.log('Password: ', values.password)
 
     if (values.email && values.password) {
-      onSignIn()
+      onSignIn && onSignIn()
 
       setValues({
         email: '',
