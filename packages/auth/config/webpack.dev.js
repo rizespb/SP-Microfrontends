@@ -11,10 +11,10 @@ const devConfig = {
   mode: 'development',
   output: {
     // В dev-конфигах мы добавляем publicPath, чтобы при изолированном запуске пр обращении к страницам по прямым адресам, например, http://localhost:8082/auth/singin указать вебпаку, что файл со скриптами (main.js) находится по адресу http://localhost:8082/main.js
-    publicPath: 'http://localhost:8081/',
+    publicPath: 'http://localhost:8082/',
   },
   devServer: {
-    port: 8081,
+    port: 8082,
     // объяснение свойтсва будет позже
     historyApiFallback: {
       index: '/index.html',
@@ -23,14 +23,14 @@ const devConfig = {
   plugins: [
     new ModuleFederationPlugin({
       // Имя модуля
-      name: 'marketing',
+      name: 'auth',
       // Название файла манифеста.
       // Лучше всегда оставлять remoteEntry.js
       filename: 'remoteEntry.js',
       // Здесь выбираем один или несколько файлов, которые мы хотим расширать во "внешний мир"
       // Под именем ProductsIndex будем отдавать файл src/bootstrap
       exposes: {
-        './MarketingApp': './src/bootstrap',
+        './AuthApp': './src/bootstrap',
       },
       // шарим зависимости (чтобы при совпадении вмажорной версии в микрофронтах грузилась только одна копия библиотеки)
       // shared: ['react', 'react-dom'],

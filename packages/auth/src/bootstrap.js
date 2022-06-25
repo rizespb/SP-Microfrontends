@@ -5,9 +5,9 @@ import { createMemoryHistory, createBrowserHistory } from 'history'
 import App from './App'
 
 // Функция mount для монтирования и запуска приложения
-const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
+const mount = (el, { onNavigate, defaultHistory, initialPath, onSignIn }) => {
   // При изолированном запуске будет использоваться defaultHistory (Browser History Object), созданная с помощью createBrowserHistory
-  // При запуске из контейнера, будет использовать Memory History Object
+  // При запуске из контейнера не будем передавать defaultHistory, будет использоваться Memory History Object
   // Передаем initialPath, чтобы микрофронт понимал, на каком адресе мы сейчас находимся и, соответственно, какие компоненты надо отрисовать
   const history =
     defaultHistory ||
@@ -22,7 +22,7 @@ const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
     history.listen(onNavigate)
   }
 
-  ReactDOM.render(<App history={history} />, el)
+  ReactDOM.render(<App history={history} onSignIn={onSignIn} />, el)
 
   // Метод onParentNavigate будет использоваться для сихронизации объекта Memory History дочернего микрофронта с изменениями path в контейнере
   return {
@@ -40,7 +40,7 @@ const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
 
 // Если в режиме девелопмент (изолировано), тогда вызываем mount немедленно
 if (process.env.NODE_ENV === 'development') {
-  const devRoot = document.querySelector('#_marketing-dev-root')
+  const devRoot = document.querySelector('#_auth-dev-root')
 
   // defaultHistory передаем для того, чтобы удобно работать при изолированном запуске микрофронта в режиме development
   if (devRoot) mount(devRoot, { defaultHistory: createBrowserHistory() })
