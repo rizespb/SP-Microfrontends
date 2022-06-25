@@ -27,6 +27,7 @@ const prodConfig = {
       remotes: {
         // marketing/latest - это специфическое положение файлов микрофронтов на сервере. В данном случае речь идет о AWS и S3
         marketingRemote: `marketing@${domain}/marketing/latest/remoteEntry.js`,
+        authRemote: `auth@${domain}/auth/latest/remoteEntry.js`,
       },
       shared: packageJson.dependencies,
     }),
